@@ -1,0 +1,34 @@
+:root {
+    --bl-nav-bg: #787878;
+    --bl-footer-bg: #e9ecef;
+    --bl-card-border: #212529;
+    --bl-radius: 0.75rem;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+h1, .h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
+h2, .h2 { font-size: 1.5rem;  font-weight: 700; }
+
+/* Navbar */
+.site-navbar { background-color: var(--bl-nav-bg); }
+.site-navbar .nav-link { border-radius: 2rem; padding: 0.4rem 1rem; }
+.site-navbar .nav-link:hover { background: rgba(255, 255, 255, 0.15); }
+.site-navbar .nav-link.active { background: #fff; color: #212529; font-weight: 600; }
+.brand { font-style: italic; font-weight: 700; letter-spacing: 0.05em; }
+
+/* Footer */
+.site-footer { background-color: var(--bl-footer-bg); color: #495057; }
+
+/* Cards and buttons used across pages */
+.card, .form-control, .form-select, .btn { border-radius: var(--bl-radius); }
+.btn { padding: 0.5rem 1.1rem; }
+
+/* Visible keyboard focus (accessibility) */
+a:focus-visible, button:focus-visible, .form-control:focus-visible {
+    outline: 3px solid #0d6efd;
+    outline-offset: 2px;
+}
