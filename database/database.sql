@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2026 at 11:38 AM
+-- Generation Time: Nov 11, 2026 at 11:50 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -37,7 +37,7 @@ CREATE TABLE `books` (
   `title` varchar(255) NOT NULL,
   `author` varchar(150) NOT NULL,
   `isbn` varchar(20) DEFAULT NULL,
-  `book_condition` enum('As New','Fine','Good','Poor') NOT NULL DEFAULT 'Fine',
+  `book_condition` enum('New','Good','Fair','Worn') NOT NULL DEFAULT 'Good',
   `availability` enum('available','borrowed') NOT NULL DEFAULT 'available',
   `cover_url` varchar(255) DEFAULT NULL,
   `qr_code` varchar(100) NOT NULL,
@@ -85,15 +85,15 @@ CREATE TABLE `notifications` (
 
 DROP TABLE IF EXISTS `subjects`;
 CREATE TABLE `subjects` (
-  `subjects_id` int(11) NOT NULL,
-  `subjects_name` varchar(100) NOT NULL
+  `subject_id` int(11) NOT NULL,
+  `subject_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `subjects`
 --
 
-INSERT INTO `subjects` (`subjects_id`, `subjects_name`) VALUES
+INSERT INTO `subjects` (`subject_id`, `subject_name`) VALUES
 (4, 'Art'),
 (3, 'Business & Economics'),
 (5, 'Culinary Arts'),
@@ -127,7 +127,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `password_hash`, `role`, `created_at`) VALUES
-(1, 'Admin User', 'admin@booklend.local', '   $2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', '2026-11-11 10:33:44');
+(1, 'Admin User', 'admin@booklend.local', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', '2026-11-11 10:33:44');
 
 --
 -- Indexes for dumped tables
@@ -162,8 +162,8 @@ ALTER TABLE `notifications`
 -- Indexes for table `subjects`
 --
 ALTER TABLE `subjects`
-  ADD PRIMARY KEY (`subjects_id`),
-  ADD UNIQUE KEY `subjects_name` (`subjects_name`);
+  ADD PRIMARY KEY (`subject_id`),
+  ADD UNIQUE KEY `subjects_name` (`subject_name`);
 
 --
 -- Indexes for table `users`
@@ -198,7 +198,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `subjects_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -215,7 +215,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `books`
   ADD CONSTRAINT `books_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `books_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subjects_id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `books_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `borrow_requests`
