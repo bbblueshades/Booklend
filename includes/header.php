@@ -13,11 +13,23 @@ $badge  = '<span class="badge text-bg-danger ms-1 notif-badge' . ($unread ? '' :
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="<?= e(csrfToken()) ?>">
     <title><?= e($pageTitle) ?> | Booklend</title>
+    <script>
+        (function () {
+            var theme = 'light';
+            try {
+                theme = localStorage.getItem('theme')
+                    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            } catch (e) {}
+            document.documentElement.setAttribute('data-bs-theme', theme);
+        })();
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?= e(url('assets/css/style.css')) ?>" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
+<a class="visually-hidden-focusable btn btn-light m-2" href="#main">Skip to main content</a>
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark site-navbar" aria-label="Main navigation">
         <div class="container-fluid">
@@ -28,12 +40,13 @@ $badge  = '<span class="badge text-bg-danger ms-1 notif-badge' . ($unread ? '' :
             <!-- Mobile: a "Menu" button instead of the hamburger icon -->
             <button class="btn btn-light rounded-pill px-3 d-lg-none" type="button"
                     data-bs-toggle="collapse" data-bs-target="#mainNav"
-                    aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation menu">
-                Menu <?php if ($unread): ?><span class="badge text-bg-danger"><?= $unread ?></span><?php endif; ?>
+                    aria-controls="mainNav" aria-expanded="false">
+                Menu <span class="badge text-bg-danger<?= $unread ? '' : ' d-none' ?>" id="menuBadge"><?= $unread ?></span>
             </button>
 
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+
                 <?php if (!$user): ?>
                     <?= navLink('login.php', 'Login') ?>
                     <?= navLink('register.php', 'Register') ?>
@@ -60,16 +73,31 @@ $badge  = '<span class="badge text-bg-danger ms-1 notif-badge' . ($unread ? '' :
                         </form>
                     </li>
                 <?php endif; ?>
+
+                <li class="nav-item d-flex align-items-center gap-2 py-2 py-lg-0 ps-lg-3 pe-lg-0 text-white theme-item">
+                    <span class="d-none d-lg-inline" aria-hidden="true">&#9728;&#65039;</span>
+                    <span class="d-lg-none">Dark mode</span>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input theme-toggle" type="checkbox" role="switch"
+                               id="themeToggle" aria-label="Dark mode">
+                    </div>
+                    <span class="d-none d-lg-inline" aria-hidden="true">&#127769;</span>
+                </li>
                 </ul>
             </div>
         </div>
     </nav>
 </header>
 
-<main class="container py-4 flex-grow-1">
+<main id="main" tabindex="-1" class="container py-4 flex-grow-1">
 <?php if ($flash): ?>
     <div class="alert alert-<?= e($flash['type']) ?> alert-dismissible fade show" role="alert">
         <?= e($flash['message']) ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+<?php endif; ?>
+
+<?php if ($user && $user['role'] === 'user'): ?>
+<script>window.NOTIF_API = <?= json_encode(url('api/notifications/count.php')) ?>;</script>
+<script type="module" src="<?= e(url('assets/js/notif-poll.js')) ?>"></script>
 <?php endif; ?>
