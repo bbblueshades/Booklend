@@ -69,3 +69,55 @@ function unreadCount(int $userId): int
     $stmt->execute([$userId]);
     return (int) $stmt->fetchColumn();
 }
+
+function jsonResponse(array $data, int $code = 200): never
+{
+    http_response_code($code);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+
+// CSRF check for fetch() requests, which send the token in a header
+function verifyCsrfHeader(): bool
+{
+    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    return isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $token);
+}
+
+// Reads a JSON request body into an array
+function jsonInput(): array
+{
+    $data = json_decode(file_get_contents('php://input'), true);
+    return is_array($data) ? $data : [];
+}
+
+function sendSecurityHeaders(): void
+{
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    // camera=(self) must stay allowed, or QR scanning will be blocked
+    header('Permissions-Policy: camera=(self), microphone=(), geolocation=()');
+    if (!empty($_SERVER['HTTPS'])) {
+        header('Strict-Transport-Security: max-age=31536000');
+    }
+}
+
+// Cover images may only come from Open Library (no uploads)
+function isValidCoverUrl(string $url): bool
+{
+    $parts = parse_url($url);
+    return $parts !== false
+        && ($parts['scheme'] ?? '') === 'https'
+        && ($parts['host'] ?? '') === 'covers.openlibrary.org'
+        && strlen($url) <= 255;
+}
+
+// Shared guard for state-changing API endpoints
+function requirePostApi(): void
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !verifyCsrfHeader()) {
+        jsonResponse(['success' => false, 'message' => 'Invalid request.'], 400);
+    }
+}
