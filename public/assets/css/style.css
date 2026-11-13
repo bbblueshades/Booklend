@@ -1,8 +1,10 @@
 :root {
     --bl-nav-bg: #787878;
-    --bl-footer-bg: #e9ecef;
-    --bl-card-border: #212529;
     --bl-radius: 0.75rem;
+}
+
+[data-bs-theme="dark"] {
+    --bl-nav-bg: #2b3035;
 }
 
 body {
@@ -21,7 +23,10 @@ h2, .h2 { font-size: 1.5rem;  font-weight: 700; }
 .brand { font-style: italic; font-weight: 700; letter-spacing: 0.05em; }
 
 /* Footer */
-.site-footer { background-color: var(--bl-footer-bg); color: #495057; }
+.site-footer {
+    background-color: var(--bs-tertiary-bg);
+    color: var(--bs-secondary-color);
+}
 
 /* Cards and buttons used across pages */
 .card, .form-control, .form-select, .btn { border-radius: var(--bl-radius); }
@@ -31,4 +36,65 @@ h2, .h2 { font-size: 1.5rem;  font-weight: 700; }
 a:focus-visible, button:focus-visible, .form-control:focus-visible {
     outline: 3px solid #0d6efd;
     outline-offset: 2px;
+}
+
+.book-cover { width: 56px; height: 80px; object-fit: cover; border-radius: 0.4rem; background: #d9d9d9; }
+.book-cover--empty { display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #495057; }
+
+/* Browse cards */
+.browse-cover { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; background: #d9d9d9;
+                border-radius: var(--bl-radius) var(--bl-radius) 0 0; }
+.browse-cover--empty { display: flex; align-items: center; justify-content: center;
+                       font-size: 0.8rem; color: #495057; }
+@media (max-width: 575.98px) {
+    .book-card { flex-direction: row; }
+    .browse-cover { width: 96px; aspect-ratio: auto; height: auto;
+                    border-radius: var(--bl-radius) 0 0 var(--bl-radius); }
+}
+
+/* Notifications */
+.notif { border-left: 4px solid transparent; }
+.notif--unread { border-left-color: #0d6efd; background: var(--bs-primary-bg-subtle); }
+.notif--unread .notif-head { font-weight: 700; }
+
+/* Keep light table headers readable in dark mode */
+[data-bs-theme="dark"] .table-light {
+    --bs-table-bg: var(--bs-tertiary-bg);
+    --bs-table-color: var(--bs-body-color);
+    --bs-table-border-color: var(--bs-border-color);
+}
+
+.theme-item .form-check-input {
+    cursor: pointer;
+}
+
+/* Tables become cards on mobile */
+@media (max-width: 767.98px) {
+    .table-cards thead {
+        position: absolute; width: 1px; height: 1px;
+        overflow: hidden; clip: rect(0 0 0 0);
+    }
+    .table-cards, .table-cards tbody, .table-cards tr, .table-cards td {
+        display: block; width: 100%;
+    }
+    .table-cards tr {
+        border: 1px solid var(--bs-border-color);
+        border-radius: var(--bl-radius);
+        background: var(--bs-body-bg);
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+    }
+    .table-cards td {
+        border: 0; padding: 0.25rem 0;
+        display: flex; justify-content: space-between; gap: 1rem; text-align: right;
+    }
+    .table-cards td::before {
+        content: attr(data-label);
+        font-weight: 600; text-align: left;
+    }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
